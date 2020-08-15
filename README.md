@@ -1,6 +1,6 @@
 # supervisao
 
-Os arquivos deste repositório demonstram a viabilidade de troca de mensagens entre as placas NodeMCU, Arduino Mega com equipamentos que se comunicam
+Os arquivos deste repositório demonstram a viabilidade de troca de mensagens entre as placas NodeMCU e Arduino Mega com equipamentos que se comunicam
 através do protocolo Modbus.
 
 Utilizando Arduino Mega, tanto TTL quanto RS485 se mostraram viáveis, já com a placa NodeMCU só foi possível utilizando RS485.
