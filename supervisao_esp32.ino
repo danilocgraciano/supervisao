@@ -15,9 +15,9 @@ int state = TX;
 unsigned long txMillis;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.setTimeout(30);
-  Serial1.begin(115200, SERIAL_8N1, 9, 10);
+  Serial1.begin(9600, SERIAL_8N1);
   Serial1.setTimeout(30);
 
 #ifdef RS485
