@@ -2,7 +2,7 @@
 
 #define TX HIGH
 #define RX LOW
-#define CTRL 3
+#define RTS 11
 
 //Caso não esteja definido, presume-se TTL
 #define RS485
@@ -10,16 +10,20 @@
 byte buffer[LENGTH];
 byte request[8] = {1, 3, 2, 0, 0, 40, 68, 108};
 
+
 int state = TX;
 unsigned long txMillis;
 
 void setup() {
   Serial.begin(9600);
   Serial.setTimeout(30);
-  Serial1.begin(9600);
+
+  Serial1.begin(9600, SERIAL_8N1);
   Serial1.setTimeout(30);
 
-  pinMode(CTRL, OUTPUT);
+#ifdef RS485
+  pinMode(RTS, OUTPUT);
+#endif
 
 }
 
@@ -27,10 +31,10 @@ void loop() {
 
   if (state == TX) {
 
-    #ifdef RS485
-      digitalWrite(CTRL, TX);
-      delay(10);
-    #endif
+#ifdef RS485
+    digitalWrite(RTS, TX);
+    delay(10);
+#endif
 
     Serial1.write(request, sizeof(request));
     Serial1.flush();
@@ -38,16 +42,16 @@ void loop() {
     Serial.print("TX: ");
     log(request, sizeof(request));
 
+#ifdef RS485
+    digitalWrite(RTS, RX);
+    delay(10);
+#endif
+
     state = RX;
     txMillis = millis();
 
-    #ifdef RS485
-      digitalWrite(CTRL, RX);
-      delay(10);
-    #endif
-
   } else {
-    
+
     if (Serial1.available()) {
       memset(buffer, 0, LENGTH);
       int length = Serial1.readBytes(buffer, LENGTH);
@@ -55,7 +59,7 @@ void loop() {
       log(buffer, length);
       state = TX;
     } else {
-      if ((millis() - txMillis) >= 5000) {
+      if ((millis() - txMillis) >= 500) {
         state = TX;
       }
     }
